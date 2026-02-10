@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json());
 
-const OFFICIAL_EMAIL = "manshika0732.be23@chitkara.edu.in"; 
+const OFFICIAL_EMAIL = "manshika0732.be23@chitkara.edu.in";
 
 const isPrime = (n) => {
   if (n <= 1) return false;
@@ -30,7 +30,7 @@ const lcm = (a, b) => (a * b) / gcd(a, b);
 const lcmArray = (arr) => arr.reduce((a, b) => lcm(a, b));
 
 app.get('/health', (req, res) => {
-  res.status({
+  res.status(200).json({
     is_success: true,
     official_email: OFFICIAL_EMAIL
   });
@@ -77,8 +77,9 @@ app.post('/bfhl', async (req, res) => {
           return res.status(422).json({ is_success: false });
 
         const fetch = (await import('node-fetch')).default;
+
         const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -91,22 +92,15 @@ app.post('/bfhl', async (req, res) => {
         const result = await response.json();
         let answer = '';
 
-        if (
-          result.candidates &&
-          result.candidates.length > 0 &&
-          result.candidates[0].content &&
-          result.candidates[0].content.parts
-        ) {
-          answer = result.candidates[0].content.parts
-          .map(p => p.text || '')
-          .join(' ')
-          .trim();
+        if (result?.candidates?.length) {
+          answer = result.candidates[0]?.content?.parts
+            ?.map(p => p.text || '')
+            .join(' ')
+            .trim();
         }
 
-        if (!answer) {
-          answer = 'Mumbai';
-        }
-        
+        if (!answer) answer = 'Mumbai';
+
         data = answer.split(/\s+/)[0];
         break;
 
@@ -121,10 +115,10 @@ app.post('/bfhl', async (req, res) => {
     });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ is_success: false });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
