@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
+app.get('/', (req, res) => {
+  res.send('API LIVE - ROUTES LOADED');
+});
 
 const OFFICIAL_EMAIL = "manshika0732.be23@chitkara.edu.in";
 
@@ -122,3 +125,4 @@ app.post('/bfhl', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
