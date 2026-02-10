@@ -30,7 +30,7 @@ const lcm = (a, b) => (a * b) / gcd(a, b);
 const lcmArray = (arr) => arr.reduce((a, b) => lcm(a, b));
 
 app.get('/health', (req, res) => {
-  res.status(200).json({
+  res.status({
     is_success: true,
     official_email: OFFICIAL_EMAIL
   });
@@ -126,4 +126,5 @@ app.post('/bfhl', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
